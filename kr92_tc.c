@@ -20,7 +20,7 @@ uint getMacOffset(uint buffer_len)
 	return buffer_len - MAC_SIZE;
 }
 
-void setHeader(buf* target, kr92_header_type h_type, kr92_header_offset value)
+void setHeader(buf* target, kr92_header_field h_type, buf value)
 {
 	buf* header = &target[HEADER_OFFSET];
 	switch(h_type)
@@ -28,7 +28,7 @@ void setHeader(buf* target, kr92_header_type h_type, kr92_header_offset value)
 		/* 각 BIT_MASK_* 값은 유지할 비트를 1로 둔 값이므로
 		 * AND로 기존 필드를 지운 뒤 OR로 새 값을 채운다. */
 		case ETY:  *header = (*header & BIT_MASK_ETY) | value; break;
-		case TYPE: *header = (*header & BIT_MASK_MTI) | value; break;
+		case MTI:  *header = (*header & BIT_MASK_MTI) | value; break;
 		case DF:   *header = (*header & BIT_MASK_DF) | value; break;
 	}
 }
@@ -52,12 +52,12 @@ void setBufferLen(buf* target)
 	 */
 }
 
-void setEtcsId(buf* target, kr92_body_type b_type, uint value)
+void setEtcsId(buf* target, kr92_mti_type b_type, uint value)
 {
 	uint bit_mask = 0xFF;
 	uint i = (b_type == AU1) ? au1_sa_start :
 	         (b_type == AU2) ? au2_sa_start : 0xFFFFFFFF;
-	switch (b_type) /* TODO */
+	switch (b_type)
 	{
 	case AU1: 
 		for (; i <= au1_sa_end; ++i)
@@ -65,7 +65,6 @@ void setEtcsId(buf* target, kr92_body_type b_type, uint value)
 			uint shift = (au1_sa_end - i) * 8;
 			target[i] = (value >> shift) & bit_mask;
 		}
-		
 		break;
 	case AU2: 
 		for (; i <= au2_sa_end; ++i)
@@ -74,17 +73,18 @@ void setEtcsId(buf* target, kr92_body_type b_type, uint value)
 			target[i] = (value >> shift) & bit_mask;
 		}
 		break;
-		default: printf("kr92_tc_setEtcsId type error\n");
-
+	default: 
+		printf("kr92_tc_setEtcsId type error\n");
+		break;
 	}
 }
 
-void setSaF(buf* target, kr92_body_type b_type, buf b)
+void setSaF(buf* target, kr92_mti_type b_type, buf b)
 {
 	uint offset = 0;
 	if (b != 1)
 	{
-		switch (b_type) /* TODO */
+		switch (b_type)
 		{
 		case AU1:
 			offset = au1_sa_end + 1;
@@ -94,16 +94,13 @@ void setSaF(buf* target, kr92_body_type b_type, buf b)
 			offset = au2_sa_end + 1;
 			target[offset] = b;
 			break;
-		default: printf("kr92_tc_setSaF type error\n");
+		default: 
+			printf("kr92_tc_setSaF type error\n");
+			break;
 		}
 	}
 	else
 	{
 		printf("kr92_tc_setSaF must be buf value is not 1\n");
 	}
-
 }
-
-
-
-

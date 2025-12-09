@@ -140,8 +140,8 @@ typedef enum {
 
 typedef enum
 {
-    ETY, TYPE, DF
-} kr92_header_type;
+    ETY, MTI, DF
+} kr92_header_field;
 
 typedef enum
 {
@@ -151,32 +151,36 @@ typedef enum
     AR = 9,
     DT = 5,
     DI = 8,
-} kr92_body_type;
+} kr92_mti_type;
 
 typedef enum
 {
     BIT_MASK_ETY = 31, // 0001 1111, 1F
     BIT_MASK_MTI = 225, // 1110 0001, E1
     BIT_MASK_DF = 254 // 1111 1110, FE,
-} kr92_bit_mask;
+} kr92_header_bit_mask;
 
 typedef enum
 {
-    ETY_ERRROR = 224, /* 3bit */
+    ETY_ERROR = 224 /* 3bit */
+} kr92_ety_value;
+
+typedef enum
+{
     MTI_AU1 = (1 << 1), 
     MTI_AU2 = (2 << 1), 
     MTI_AU3 = (3 << 1), 
     MTI_AR  = (9 << 1), 
     MTI_DT  = (5 << 1), 
     MTI_DI  = (8 << 1) /* 4 bit */
-} kr92_header_offset;
+} kr92_mti_value;
 
 
 typedef enum /* 양쪽 다 포함 */
 {
     au1_sa_start = 2, au1_sa_end = 4, 
     au2_sa_start = 2, au2_sa_end = 4,
-} kr92_body_sa;
+} kr92_sa_offset;
 
 
 /* 설정된 테스트 케이스 */
@@ -198,11 +202,11 @@ kr92_test_case get_tc();
 uint getMacOffset(uint buffer_len);
 
 /* TC 유틸리티 선언 */
-void setHeader(buf* target, kr92_header_type h_type, kr92_header_offset value);
+void setHeader(buf* target, kr92_header_field h_type, buf value);
 void setMac(buf* target, uint bufLen, unsigned long value);
 void setBufferLen(buf* target);
-void setEtcsId(buf* target, kr92_body_type b_type, uint value);
-void setSaF(buf* target, kr92_body_type b_type, buf b);
+void setEtcsId(buf* target, kr92_mti_type b_type, uint value);
+void setSaF(buf* target, kr92_mti_type b_type, buf b);
 
 /* 개별 TC 별 추가 */
 // ###########################################################

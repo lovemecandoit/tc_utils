@@ -10,7 +10,8 @@
  */
 int main(void) {
     /* 헤더 1바이트 + ETCS-ID 3바이트 + SaF 1바이트 + MAC 8바이트 = 13바이트 */
-    const uint buf_len = 1 + 3 + 1 + MAC_SIZE;
+    int body_len = 4;
+    const uint buf_len = 1 + 3 + 1 + body_len + MAC_SIZE;
     buf msg[buf_len];
     memset(msg, 0, sizeof(msg));
 
@@ -19,8 +20,8 @@ int main(void) {
     printf("현재 TC: %d\n", get_tc());
 
     /* 헤더 필드 설정 */
-    setHeader(msg, ETY, ETY_ERRROR); /* ETY 필드 예시 */
-    setHeader(msg, TYPE, MTI_AU1);   /* MTI=AU1 */
+    setHeader(msg, ETY, ETY_ERROR); /* ETY 필드 예시 */
+    setHeader(msg, MTI, MTI_AU1);   /* MTI=AU1 */
     setHeader(msg, DF, 1);           /* 방향 플래그 예시 */
 
     /* 바디 - ETCS-ID 설정 (AU1 기준) */
