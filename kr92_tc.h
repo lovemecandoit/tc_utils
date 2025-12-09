@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef enum {
 	TC1 = 1,    /* Normal order of events
@@ -181,8 +182,10 @@ typedef enum /* 양쪽 다 포함 */
 /* 설정된 테스트 케이스 */
 extern kr92_test_case cur_test_case;
 
-typedef unsigned char buf;
-typedef unsigned int uint;
+/* 표준 타입 사용 */
+typedef uint8_t buf;
+typedef uint32_t uint;
+
 
 /* SIZE 정의 */
 #define MAC_SIZE 8
